@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MyAnt" basedir="." default="run">
+
+	<!-- Initialisation -->
+	<target name="init" description="Initialize build">
+		<!-- On récupère la racine du projet-->
+		<property name="project.root.dir" value="D:/Projet/workspaceJavaPro/JavaPro/TP1/MyAnt/" />
+		<property name="project.src.dir" value="${project.root.dir}/src" />
+		<property name="project.bin.dir" value="${project.root.dir}/bin" />
+		<!-- On récupère le chemin de sortie du jar -->
+		<property name="output.jar.dir" value="D:/Projet/workspaceJavaPro/JavaPro/TP1/MyAnt/" />
+		<!-- On récupère le nom du jar -->
+		<property name="output.jar.name" value="MyAnt.jar" />
+		
+	</target>
+	
+	<!-- Nettoie le projet -->
+	<target name="clean" description="Removes all generated files">
+		<delete>
+			<fileset dir="${project.bin.dir}" includes="*.class" />
+		</delete>
+	</target>
+	
+	<!-- Compilation des fichiers sources -->
+	<target name="compile" depends="clean">
+		<javac srcdir="${project.src.dir}" destdir="${project.bin.dir}" debug="on" />
+	</target>
+	
+	<!-- Création du jar -->
+	<target name="package" depends="compile">
+		<jar jarfile="${output.jar.dir}/${output.jar.name}.jar" basedir="${project.bin.dir}" manifest="META-INF/Manifest.mf"/>
+	</target>
+	
+	<!-- Lancement du jar -->
+    <target name="run">
+        <java jar="${output.jar.dir}/${output.jar.name}.jar" fork="true"/>
+    </target>
+	
+</project>

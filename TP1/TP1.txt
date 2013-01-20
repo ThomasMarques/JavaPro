@@ -1,3 +1,5 @@
+ECLIPSE :
+
 Perspective Java
 JAVAEE (utilisée pour le développement professionnel)
 Package explorer / Code view / Task List / Outline / Problems / Javadoc / Declaration
@@ -20,4 +22,13 @@ Run (Ctrl + F11) / Refractor (Alt + Shift + R) / Indenter (Ctrl + I) / Ctrl barr
 ./bin/fr/isima/myant/
 On ne voit pas les .class dans eclipse et les paskages sont représentés avec un dossier par niveau du paskage.
 
-  
+
+REFLECTION API
+
+Voir projet (MyAnt)
+Pour créer et ajouter des taches externes il faut qu'elles héritent de la classe fr.isima.myant.Task.
+
+
+ANT
+
+Voir build-myant.xml
