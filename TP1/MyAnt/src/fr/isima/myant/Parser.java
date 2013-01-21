@@ -1,3 +1,4 @@
+package fr.isima.myant;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,7 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-
+/**
+ * Classe permettant de parser un fichier et éxecute le target par defaut.
+ */
 public class Parser {
 
 	private static final int PACKAGE=1;
@@ -16,6 +19,10 @@ public class Parser {
 	private static final int PARAM2=3;
 	private static final String DEFAULT_PACK="fr.isima.myant";
 
+	/**
+	 * Fonction permettant de parser un fichier et éxecute le target par defaut.
+	 * @param name Nom du fichier à parser.
+	 */
 	public void parse(String name)
 	{
 		FileReader reader;
@@ -72,41 +79,33 @@ public class Parser {
 				line=bufred.readLine();
 			}
 			
+			bufred.close();
+			
 			System.out.println("\nExecute :\n");
 			projet.getMethod("execute").invoke(proj);
 
 
 		} catch (FileNotFoundException e) {
-			System.out.println("Fichier non trouvé");
-		} catch (IOException e) {
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Fichier non trouvé.");
+		}catch (ClassNotFoundException e) {
+			System.out.println("Classe manquante dans le classpath.");
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Methode non défénit dans la classe.");
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Attributs ou méthodes inaccessible.");
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Impossible d'invoquer la méthode demandé.");
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			System.out.println("Méthode non trouvé dans la classe.");
+		} catch (IOException e) {
+			System.out.println("Une erreur est survenu lors de la lecture du fichier.");
+		} 
 
 	}
 
 	/**
-	 * @param args
+	 * Fonction lancée au démarrage du programme.
+	 * @param args Arguments passés en ligne de commande.
 	 */
 	public static void main(String[] args) {
 		Parser par= new Parser();

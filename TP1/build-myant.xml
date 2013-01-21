@@ -4,11 +4,11 @@
 	<!-- Initialisation -->
 	<target name="init" description="Initialize build">
 		<!-- On récupère la racine du projet-->
-		<property name="project.root.dir" value="D:/Projet/workspaceJavaPro/JavaPro/TP1/MyAnt/" />
+		<property name="project.root.dir" value="C:/Users/marquest/Documents/GitHub/JavaPro/TP1/MyAnt/" />
 		<property name="project.src.dir" value="${project.root.dir}/src" />
 		<property name="project.bin.dir" value="${project.root.dir}/bin" />
 		<!-- On récupère le chemin de sortie du jar -->
-		<property name="output.jar.dir" value="D:/Projet/workspaceJavaPro/JavaPro/TP1/MyAnt/" />
+		<property name="output.jar.dir" value="C:/Users/marquest/Documents/GitHub/JavaPro/TP1/MyAnt/" />
 		<!-- On récupère le nom du jar -->
 		<property name="output.jar.name" value="MyAnt.jar" />
 		
