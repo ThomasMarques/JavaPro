@@ -32,7 +32,7 @@
 	</target>
 	
 	<!-- Lancement du jar -->
-    <target name="run">
+    <target name="run" depends="package" >
         <java jar="${output.jar.dir}/${output.jar.name}.jar" fork="true"/>
     </target>
 	
