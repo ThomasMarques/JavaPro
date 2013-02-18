@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MyAnt" default="coverage">
+	
+	<!-- Permet de setter les différentes propriétés avec les valeurs de configuration.properties -->
+	<property file="configuration.properties" />
+	
+	<!-- Initialisation des différents paths -->
+	<path id="classpath.test">
+		<pathelement location="${project.all.bin}" />
+		<pathelement location="${path.junit}" />
+		<pathelement location="${path.hamcrest}" />
+	</path>
+	
+	<path id="classpath.global">
+		<pathelement location="${project.myant.src}" />
+		<pathelement location="${project.myextant.src}" />
+	</path>
+	
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="coverage" depends="compile, test, instrument, coverage-xml-report, coverage-html-report"/>
+	
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	
+	<target name="clean">
+		<delete dir="${project.all.bin}"/>
+		<delete dir="${instrumented.dir}" />
+		<delete dir="${reports.dir}" />
+		<delete dir="${coverage.dir}" />
+		<delete file="cobertura.log" />
+		<delete file="cobertura.ser" />
+	</target>
+	
+	<target name="init" depends="clean">
+		<property file="configuration.properties" />
+		
+		<mkdir dir="${instrumented.dir}" />
+		<mkdir dir="${reports.dir}" />
+		<mkdir dir="${reports.dir}/html" />
+		<mkdir dir="${reports.dir}/xml" />
+		<mkdir dir="${coverage.dir}/xml" />
+		<mkdir dir="${coverage.dir}/html" />
+	</target>
+	
+    <target name="compile" depends="init">
+		<!-- MyAnt -->
+    	<echo message="Compilation : ${project.myant.src}" />
+        <mkdir dir="${project.all.bin}"/>
+        <javac srcdir="${project.myant.src}" destdir="${project.all.bin}" includeAntRuntime="no"  debug="yes">
+			<classpath refid="cobertura.classpath" />
+		</javac>
+		<!-- MyExtAnt -->
+    	<echo message="Compilation : ${project.myextant.src}" />
+        <javac srcdir="${project.myextant.src}" destdir="${project.all.bin}" includeAntRuntime="no" classpath="${project.myant.dir}"  debug="yes">
+			<classpath refid="cobertura.classpath" />
+		</javac>
+		<!-- MyAntTest -->
+    	<echo message="Compilation : ${project.myanttest.src}" />
+        <javac srcdir="${project.myanttest.src}" destdir="${project.all.bin}" includeAntRuntime="no"  debug="yes">
+			<classpath refid="cobertura.classpath" />
+			<classpath refid="classpath.test" />
+			<classpath refid="classpath.global" />
+		</javac>		
+    </target>
+	
+	<target name="test" depends="compile">
+		<junit fork="yes" haltonerror="true" haltonfailure="on" printsummary="on" dir="${project.myanttest.dir}" forkmode="once">
+			<formatter type="xml" usefile="true" />
+			
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" />
+			
+			<classpath location="${instrumented.dir}" />
+			<classpath refid="cobertura.classpath" />
+			<classpath>
+				<pathelement location="${project.all.bin}"/>
+				<pathelement location="${project.myanttest.src}"/>
+				<pathelement location="${project.myanttest.dir}" />
+				<pathelement location="${path.junit}"/>
+				<pathelement location="${path.hamcrest}"/>
+			</classpath>
+			<batchtest fork="yes" todir="${reports.dir}/xml">
+		        <fileset dir="${project.all.bin}">
+		            <include name="**/*Test.class"/>
+		        </fileset>
+		    </batchtest>
+		</junit>
+		<junitreport todir="${reports.dir}/xml">
+			<fileset dir="${reports.dir}/xml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.dir}/html" />
+		</junitreport>
+	</target>
+	
+	<target name="instrument">
+		<delete file="cobertura.ser"/>
+		<delete dir="${instrumented.dir}" />
+		<cobertura-instrument todir="${instrumented.dir}">
+			<ignore regex="org.apache.log4j.*" />
+
+			<fileset dir="${project.all.bin}" >
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+			
+		</cobertura-instrument>
+	</target>
+	
+	<target name="coverage-xml-report">
+		<cobertura-report destdir="${coverage.dir}/xml" format="xml">
+			<fileset dir="${project.myanttest.src}" >
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${project.myextant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${project.myant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<target name="coverage-html-report">
+		<cobertura-report destdir="${coverage.dir}/html" format="html">
+			<fileset dir="${project.myanttest.src}" >
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${project.myextant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${project.myant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+		</cobertura-report>
+	</target>
+	
+	<target name="summary-coverage-report">
+		<cobertura-report destdir="${coverage.dir}/xml" format="summaryXml">
+			<fileset dir="${project.myanttest.src}" >
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${project.myant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${project.myextant.src}">
+				<include name="**/*.java"/>
+			</fileset>
+		</cobertura-report>
+	</target>
+
+    <target name="jar">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${jar.name}" basedir="${project.all.bin}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Built-By" value="${user.name}"/>
+            </manifest>
+        </jar>
+    </target>
+	
+    <target name="run">
+        <java jar="${jar.dir}/${jarname}" fork="true">
+			<classpath refid="classpath.global" />
+		</java>
+    </target>
+	
+</project>

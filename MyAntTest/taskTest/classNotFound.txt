@@ -1,0 +1,30 @@
+# The imports section lists the external tasks to use
+# The external tasks must be in the classpath, but NOT in the build path
+use fr.isima.myant.Task as Task
+use fr.isima.myant.classNotFound as CopyTask
+use fr.isima.myant.EchoTask as EchoTask
+use fr.isima.myant.MkdirTask as MkdirTask
+use fr.isima.myant.DeleteTask as DeleteTask
+use fr.isima.myant.CompileTask as CompileTask
+# For the moment, the default target acts as the entry point of your project
+# No other targets will be defined
+default: package
+
+tp1:
+echo[message:"Starting... "]
+EchoTask[message:"COUCOU!"]
+CopyTask[from:"blbla.fr", to:"C:\Windows"]
+MkdirTask[dossier:"toto"]
+echo[message:"Completed! "]
+
+clean:
+DeleteTask[filename:"fichierSuppr.txt"]
+echo[message:"Cleaning..."]
+
+compile:
+CompileTask[repoSrc:"/src", repoBin:"/bin"]
+echo[message:"Compiling..."]
+
+package: clean, compile
+EchoTask[message:"Package!"]
+echo[message:"Creating JAR..."]

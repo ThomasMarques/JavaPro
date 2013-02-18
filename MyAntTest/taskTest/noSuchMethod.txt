@@ -1,0 +1,15 @@
+# The imports section lists the external tasks to use
+# The external tasks must be in the classpath, but NOT in the build path
+use fr.isima.myant.Task as Task
+use fr.isima.myant.CopyTask as CopyTask
+use fr.isima.myant.EchoTask as EchoTask
+use fr.isima.myant.MkdirTask as MkdirTask
+use fr.isima.myant.DeleteTask as DeleteTask
+use fr.isima.myant.CompileTask as CompileTask
+# For the moment, the default target acts as the entry point of your project
+# No other targets will be defined
+default: package
+
+package: 
+EchoTask[message:"Package!",message3="Coucou"]
+echo[message:"Creating j JAR..."]
